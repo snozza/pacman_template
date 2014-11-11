@@ -68,11 +68,11 @@ pacmanServices.factory('Pacman', [  function() {
 pacmanServices.factory('Grid', [  function() {
 
   var Grid = function() {
-    DEFAULT_SIZE = 900
-    this.size = DEFAULT_SIZE
-    this.factory = grid.factory
-    this.placing = grid.placing
-    this.removeContent = grid.removeContent
+    this.DEFAULT_SIZE = 900
+    this.size = this.DEFAULT_SIZE
+    // this.factory = Grid.prototype.factory
+    // this.placing = Grid.prototype.placing
+    this.removeContent = Grid.prototype.removeContent
   }
 
   Grid.prototype.factory = function(object) {
