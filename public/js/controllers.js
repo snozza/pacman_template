@@ -2,15 +2,11 @@
 
 /* Controllers */
 
-var myControllers = angular.module('myControllers', []);
+var pacmanControllers = angular.module('pacmanControllers', []);
 
-myControllers.controller('oneCtrl', ['$scope', 'Service', '$http', function($scope, Service, $http) {
+pacmanControllers.controller('gameController', ['$scope', 'Cell', function($scope, Cell) {
     
-
-
-
-
-
+  // var board = new Grid
 
 
  }]);
