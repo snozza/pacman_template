@@ -6,30 +6,38 @@ var pacmanControllers = angular.module('pacmanControllers', []);
 
 pacmanControllers.controller('gameController', ['$scope', 'Cell', 'Grid', 'Pacman', function($scope, Cell, Grid, Pacman) {
     
-  var cell = new Cell
-  var board = new Grid
-  board.factory(Cell)
+ 
+
+  setupGame()
+
+  
+
+  function setupGame() {
+    var cell = new Cell
+    var board = new Grid
+    board.factory(Cell)
+    var pacman = new Pacman
+    board.placing(pacman, '1:1')
+
+    $scope.pacman = pacman
+    $scope.cellName = cell.name
+    $scope.boardSize = board.size
+    $scope.board = board
+    $scope.isResponded = false
+  }
 
 
-  $scope.cellName = cell.name
-  $scope.boardSize = board.size
-  $scope.board = board
+     $scope.keypress = function(keyEvent) {
+       ($scope.isResponded == true) ? $scope.isResponded = false : $scope.isResponded = true
+      
+        console.log('Which?',keyEvent.which)
+        console.log('type',keyEvent.type)
+        console.log('keypress', keyEvent);
+    };
 
-  // display(board,$scope)
-
-// function display(board) {
-//   var colName = 'col'
-//   var a = 1
-//   while(a < board.size) {
-//     $scope[colName.valueOf()] = []
-//     for(var i = 0; i < 30; i++) {
-//       $scope[colName.valueOf()].push(board[a])
-//       console.log($scope[colName.valueOf()])
-//     }
-//     a++
-//     colName = colName + a.toString()
-//   }
-// }
+//key event pacman.move
+//watch on table to update content
+//imgsrc to render the pacman in the the grid
 
 
 

@@ -8,7 +8,7 @@ var pacmanApp = angular.module('pacmanApp', [
   'pacmanServices'
 ])
 
-pacmanApp.config(['$routeProvider', 
+pacmanApp.config(['$routeProvider',
   function($routeProvider) {
     $routeProvider.
   when('/home', {

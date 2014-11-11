@@ -30,7 +30,6 @@ pacmanServices.factory('Pacman', [  function() {
 
   var Pacman = function() {
     this.currentCell
-    this.move = pacman.move
     this.name = 'pacman'
     this.user
   }
