@@ -18,7 +18,7 @@ pacmanControllers.controller('gameController', ['$scope', 'Cell', 'Grid', 'Pacma
     board.factory(Cell)
     var pacman = new Pacman
     board.placing(pacman, '1:1')
-
+    $scope.cell = cell
     $scope.pacman = pacman
     $scope.cellName = cell.name
     $scope.boardSize = board.size
@@ -29,10 +29,18 @@ pacmanControllers.controller('gameController', ['$scope', 'Cell', 'Grid', 'Pacma
 
      $scope.keypress = function(keyEvent) {
        ($scope.isResponded == true) ? $scope.isResponded = false : $scope.isResponded = true
-      
-        console.log('Which?',keyEvent.which)
-        console.log('type',keyEvent.type)
-        console.log('keypress', keyEvent);
+        console.log('initially pacman pos',  $scope.pacman.currentCell)
+        $scope.board.removeContent(Cell,  $scope.pacman.currentCell)
+        $scope.pacman.move(keyEvent.keyIdentifier)
+        // console.log('after key event',  $scope.pacman.currentCell)
+         $scope.board.placing( $scope.pacman,  $scope.pacman.currentCell)
+
+
+        // console.log('pacman postion', $scope.pacman.currentCell)
+        console.log('keyname', keyEvent.keyIdentifier)
+        // console.log('Which?',keyEvent.which)
+        // console.log('type',keyEvent.type)
+        // console.log('keypress', keyEvent);
     };
 
 //key event pacman.move

@@ -39,20 +39,20 @@ pacmanServices.factory('Pacman', [  function() {
     var row = parseInt(self.currentCell.substring(0,self.currentCell.indexOf(':')))
     var column = parseInt(self.currentCell.substring(self.currentCell.indexOf(':') + 1,self.currentCell.length))
     
-    if(keyDirection == "down" && row > 1)
+    if(keyDirection == "Down" && row > 1)
     {
       self.currentCell = (row - 1).toString() + ':' + column.toString()
     }
 
-    if(keyDirection == "up" && row < 30)
+    if(keyDirection == "Up" && row < 30)
     {
       self.currentCell = (row + 1).toString() + ':' + column.toString()
     }
-    if(keyDirection == "left" &&  column > 1)
+    if(keyDirection == "Left" &&  column > 1)
     {
       self.currentCell = row.toString() + ':' + (column - 1).toString()
     }
-    if(keyDirection == "right" && column < 30)
+    if(keyDirection == "Right" && column < 30)
     {
       self.currentCell = row.toString() + ':' + (column + 1).toString()
     }
