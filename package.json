@@ -3,11 +3,12 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "bower": "~1.2.8",
+    "ejs": "~0.8.5",
+    "express": "~3.4.7",
     "jade": "~1.1.4",
     "nodemon": "~1.0.8",
-    "express": "~3.4.7",
-    "ejs": "~0.8.5",
-    "bower": "~1.2.8"
+    "socket.io": "^1.2.0"
   },
   "devDependencies": {
     "karma": "^0.12.16",
@@ -24,8 +25,5 @@
     "prestart": "npm install",
     "start": "node app.js",
     "test": "node node_modules/karma/bin/karma start test/karma.conf.js"
-
-
   }
-
 }

@@ -6,12 +6,15 @@
 var express = require('express'),
   routes = require('./routes'),
   api = require('./routes/api'),
+  path = require('path'),
   http = require('http'),
-  path = require('path');
+  app = express(),
+  server = require('http').createServer(app),
+  io = require("socket.io")(server);
 
 
 
-var app = module.exports = express();
+
 
 /**
  * Configuration
@@ -59,11 +62,15 @@ app.get('/home', routes.index);
 app.get('/game', routes.index);
 app.get('/highscore', routes.index);
 
-
+//io sockets
+io.on('connection', function(socket) {
+  console.log('A user has connected')
+});
 /**
  * Start Server
  */
 
-http.createServer(app).listen(app.get('port'), function () {
+server.listen(app.get('port'), function () {
+
   console.log('Express server listening on port ' + app.get('port'));
 });
