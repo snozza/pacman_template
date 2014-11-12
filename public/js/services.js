@@ -6,110 +6,245 @@ var pacmanServices = angular.module('pacmanServices',[])
 
 
 
-pacmanServices.factory('Cell', [  function() {
+pacmanServices.factory('Cell', [ function() {
 
-  var Cell = function() {
-    this.content
-    this.name = "empty"
-    this.isAvailable = true
-    // this.changeContent = cell.changeContent
-
-  }
-
-  Cell.prototype.changeContent = function(obj) {
-    var self = this
-    if (self.isAvailable) {
-      self.content = obj
-      self.isAvailable = false}
+  var Cell = function(){
+  this.content = new Corridor;
+  this.temporaryContent = null;
   }
   return Cell
+
+}])
+
+pacmanServices.factory('Corridor', [ function() {
+
+  var Corridor = function(){
+  this.name = 'available'
+  }
+  return Corridor
+
 }])
 
 
-pacmanServices.factory('Pacman', [  function() {
+pacmanServices.factory('Pacman', [ function() {
 
-  var Pacman = function() {
-    this.currentCell
-    this.name = 'pacman'
-    this.user
-  }
+  var Pacman = function(){
+  this.lifeCount = 3
+  this.pointCount = 0
+  this.location = 466;
+  this.name = 'pacman'
 
-  Pacman.prototype.move = function(keyDirection) {
+};
+
+  Pacman.prototype.loseLife = function() {
     var self = this
-    var row = parseInt(self.currentCell.substring(0,self.currentCell.indexOf(':')))
-    var column = parseInt(self.currentCell.substring(self.currentCell.indexOf(':') + 1,self.currentCell.length))
-    
-    if(keyDirection == "Down" && row > 1)
-    {
-      self.currentCell = (row - 1).toString() + ':' + column.toString()
-    }
+    self.lifeCount -=1;
+  };
 
-    if(keyDirection == "Up" && row < 30)
-    {
-      self.currentCell = (row + 1).toString() + ':' + column.toString()
-    }
-    if(keyDirection == "Left" &&  column > 1)
-    {
-      self.currentCell = row.toString() + ':' + (column - 1).toString()
-    }
-    if(keyDirection == "Right" && column < 30)
-    {
-      self.currentCell = row.toString() + ':' + (column + 1).toString()
-    }
+  Pacman.prototype.gainOnePoint = function() {
+    var self = this
+    self.pointCount +=1;
+  };
 
-  }
+  Pacman.prototype.moveRight = function() {
+    var self = this
+    self._leaveCell(self.location);
+    if (self.maze.cells[self.location + 1].content instanceof Wall){
+      return self.location}
+    else{
+      self.location +=1;
+      self._enterCell(self.location)
+    }
+  };
+
+  Pacman.prototype.moveLeft = function() {
+    var self = this
+    self._leaveCell(self.location);
+     if (self.maze.cells[self.location - 1].content instanceof Wall){
+      return self.location}
+    else{
+      self.location -=1;
+      self._enterCell(self.location)
+    }
+  };
+
+  Pacman.prototype.moveUp = function() {
+    var self = this
+    self._leaveCell(self.location);
+     if (self.maze.cells[self.location - self.maze.width].content instanceof Wall){
+      return self.location}
+    else{
+      self.location -=self.maze.width;
+      self._enterCell(self.location)
+    }
+  };
+
+  Pacman.prototype.moveDown = function() {
+    var self = this
+    self._leaveCell(self.location);
+    if (self.maze.cells[self.location + self.maze.width].content instanceof Wall){
+      return self.location}
+    else{
+      self.location += self.maze.width;
+      self._enterCell(self.location)
+    }
+  };
+
+  Pacman.prototype._leaveCell = function(location) {
+    var self = this
+    self.maze.cells[location].content = new Corridor;
+  };
+
+  Pacman.prototype._enterCell = function(location) {
+    var self = this
+    self._checkGhost(location);
+    self._eatDot(location);
+    self.maze.cells[location].content = self
+  };
+
+  Pacman.prototype._eatDot = function(location) {
+    var self = this
+    if(self.maze.cells[location].content instanceof Dot)
+      self.pointCount +=1;
+  };
+
+  Pacman.prototype._checkGhost = function(location) {
+    var self = this
+    if(self.maze.cells[location].content instanceof Ghost)
+      self.lifeCount -=1;
+  };
 
   return Pacman
 
 }])
 
+pacmanServices.factory('Wall', [ function() {
 
-pacmanServices.factory('Grid', [  function() {
-
-  var Grid = function() {
-    this.DEFAULT_SIZE = 900
-    this.size = this.DEFAULT_SIZE
-    // this.factory = Grid.prototype.factory
-    // this.placing = Grid.prototype.placing
-    this.removeContent = Grid.prototype.removeContent
+  var Wall = function(){
+  this.name = 'wall'
   }
+  return Wall
 
-  Grid.prototype.factory = function(object) {
+}])
+
+function Dot(){
+  this.name = 'dot'
+};
+
+pacmanServices.factory('Dot', [ function() {
+
+  var Dot = function(){
+  this.name = 'dot'
+  }
+  return Dot
+
+}])
+
+
+pacmanServices.factory('Ghost', [ function() {
+
+  var Ghost = function() {
+    this.name = 'ghost'
+    this.location = 253; 
+  };
+
+  Ghost.prototype.moveRight = function() {
     var self = this
-    for(var i = 1; i < 31; i++) {
-      for(var j = 1; j < 31; j++) {
-        self[i + ':' + j] = new object
-      }
+    self._leaveCell(self.location);
+    if (self.maze.cells[self.location + 1].content instanceof Wall){
+      return self.location}
+    else{
+      self.location +=1;
+      self._enterCell(self.location)
     }
-  }
+  };
 
-  Grid.prototype.placing = function(object,position) {
+  Ghost.prototype.moveLeft = function() {
     var self = this
-    if (self[position].isAvailable) {
-    self[position].changeContent(object)
-    object.currentCell = position 
-    self[position].name = object.name}
-  }
+    self._leaveCell(self.location);
+     if (self.maze.cells[self.location - 1].content instanceof Wall){
+      return self.location}
+    else{
+      self.location -=1;
+      self._enterCell(self.location)
+    }
+  };
 
-  Grid.prototype.removeContent = function(Cell,position) {
+  Ghost.prototype.moveUp = function() {
     var self = this
-    self[position] = new Cell
-  }
+    self._leaveCell(self.location);
+     if (self.maze.cells[self.location - self.maze.width].content instanceof Wall){
+      return self.location}
+    else{
+      self.location -= self.maze.width;
+      self._enterCell(self.location)
+    }
+  };
 
-  return Grid
+  Ghost.prototype.moveDown = function() {
+    var self = this
+    self._leaveCell(self.location);
+    if (self.maze.cells[self.location + self.maze.width].content instanceof Wall){
+      return self.location}
+    else{
+      self.location += self.maze.width;
+      self._enterCell(self.location)
+    }
+  };
+
+  Ghost.prototype._leaveCell = function(location) {
+    var self = this
+    self.maze.cells[location].content = self.maze.cells[location].temporaryContent;
+  };
+
+  Ghost.prototype._enterCell = function(location) {
+    var self = this
+    self.maze.cells[location].temporaryContent = self.maze.cells[location].content
+    self.maze.cells[location].content = self;
+  };
+
+  return Ghost
 
 }])
 
 
 
 
+pacmanServices.factory('Maze', [ function() {
 
+  var Maze = function(width, height){
+    this.width = width;
+    this.height = height;
+    this.size = width * height;
+    this.cells = [];
+  };
 
+  Maze.prototype.generate = function() {
+    var self = this
+    for(var i=0; i < self.size; i++){
+        self.cells.push(new Cell)
+    }
+  };
 
+  Maze.prototype.addPacman = function(pacman) {
+    var self = this
+    self.pacman = pacman;
+    self.pacman.maze = this;
+  };
 
+  Maze.prototype.place = function(object, index) {
+    var self = this
+    self.cells[index].content = object;
+  };
 
+  Maze.prototype.addGhost = function(ghost) {
+    var self = this
+    self.ghost = ghost;
+    self.ghost.maze = this;
+  };
 
+  return Maze
 
-
+}])
 
 
